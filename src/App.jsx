@@ -1,33 +1,99 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useEffect, useState } from 'react'
 import './App.css'
 
+import poemData from './static/poem.json';
+
+import { sleepNow, typeCode, typeAllCode, smoothScrollToBottomOfPage } from './utils/utils';
+
+const writeStanzas = async () => {
+
+  for (const stanza of poemData.stanzas) {
+
+    for (let i = 0; i < 4; i++) {
+      await typeCode(`.stanza${stanza.id} .verse${i + 1}`, stanza.verses[i]);
+      await sleepNow(1000);
+      smoothScrollToBottomOfPage();
+    }
+  }
+};
+
+const writePoem = async () => {
+  await sleepNow(1000);
+  await typeCode('.poemTitle', poemData.title, 100);
+  await sleepNow(1000);
+  await writeStanzas();
+  smoothScrollToBottomOfPage();
+  await typeCode('.dedication', poemData.dedication);
+  smoothScrollToBottomOfPage();
+  await typeCode('.signature', poemData.signature);
+  smoothScrollToBottomOfPage();
+}
+
 function App() {
-  const [count, setCount] = useState(0)
+  const [poem, setPoem] = useState({
+    title: "",
+    stanzas: [],
+    dedication: "",
+    signature: "",
+  })
+
+  const [showPoem, setShowPoem] = useState(false);
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
+  const [code, setCode] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!e.target.input.value) return;
+
+    console.log(code);
+    console.log(e.target.input.value)
+
+    if (code === 'abracos') {
+      setShowPoem(true);
+      return;
+    }
+
+    setShowErrorMessage(true);
+  }
+
+  useEffect(() => {
+    setPoem(poemData);
+  }, [])
+  useEffect(() => {
+    (async () => {
+      if (showPoem) {
+        await writePoem();
+      }
+    })();
+  }, [showPoem])
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      {!showPoem ? <div className='start'>
+        <h1 className='appName'>Elysium</h1>
+        <h4 className='appSlogan'>Where words dance and hearts sing</h4>
+        <form className='form-container' onSubmit={handleSubmit}>
+          <label htmlFor="">Code:</label>
+          <input id="input" placeholder='Ex: a cool code' type="text" value={code} onChange={(e) => { setCode(e.target.value); setShowErrorMessage(false) }} />
+          <p className={`${showErrorMessage ? "hasError" : ""}`}>Unfortunately no poems correspond to that code :(</p>
+          <button>Submit</button>
+        </form>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+        : <div className="poem">
+          <h1 className='poemTitle'>{ }</h1>
+          {poemData.stanzas.map((stanza, index) => <div className={`stanza${index + 1}`} id={`stanza${index + 1}`} key={stanza.id}>
+            <p className='verse1'>{ }</p>
+            <p className='verse2'>{ }</p>
+            <p className='verse3'>{ }</p>
+            <p className='verse4'>{ }</p>
+          </div>)
+          }
+          <div>
+            <p className='dedication'></p>
+            <p className='signature'></p>
+          </div>
+        </div>}
     </>
   )
 }

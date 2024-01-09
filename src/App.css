@@ -1,7 +1,9 @@
+
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 30px 20px;
   text-align: center;
 }
 
@@ -39,4 +41,123 @@
 
 .read-the-docs {
   color: #888;
+}
+
+.poem {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.poemTitle {
+  margin-bottom: 0;
+}
+
+.poem p {
+  margin: 0px;
+}
+
+.poem .stanza {}
+
+:root {
+
+  --SoftPink: #FFD1DC;
+  --MutedPurple: #BFA3C4;
+  --LightBlue: #AED6F1;
+  
+  --DeepRed: #B22222;
+  --RichGold: #FFD700;
+  
+  --WarmBrown: #8B4513;
+  --SoftGreen: #A9DFBF;
+  --SubtleCream: #F5F5DC;
+  
+  --CoolBlue: #3498DB;
+  --SoftGray: #D3D3D3;
+  
+  --CreamyOff-White: #FFF8E1;
+  --RoseGold: #B76E79;
+}
+
+body {
+  background-color: var(--SubtleCream);
+  color: #333;
+}
+
+.form-container {
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+  text-align: left;
+}
+
+.form-container label {
+  display: block;
+  margin-bottom: 8px;
+  color: #333333;
+  text-align: left;
+  font-weight: bold;
+}
+
+.form-container input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 5px;
+  box-sizing: border-box;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  background-color: var(--CreamyOff-White);
+  color: #333333;
+}
+
+.form-container p {
+  margin: 0 0 16px 0;
+  font-size: 14px;
+  color: var(--DeepRed);
+  display: none;
+}
+
+.form-container .hasError {
+  display: block;
+}
+
+.form-container button {
+  background-color: var(--DeepRed);
+  color: var(--CreamyOff-White);
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  font-family: 'Roboto', sans-serif;
+  letter-spacing: 2px;
+  font-weight: bold;
+}
+
+.form-container button:hover {
+  background-color: #2980b9;
+}
+
+.appName {
+  margin: 0;
+}
+
+.appSlogan {
+  margin: 0 0 32px 0;
+}
+
+.start {
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (max-width: 767px) {
+  #root {
+    margin: 0;
+  }
+  
 }
