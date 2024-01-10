@@ -2,25 +2,33 @@ import { useEffect, useState } from 'react'
 import './App.css'
 
 import poemData from './static/poem.json';
+import jardimAudioFile from './static/jardim.mp3'
 
 import { sleepNow, typeCode, typeAllCode, smoothScrollToBottomOfPage } from './utils/utils';
+
+const DEFAULT_AUDIO_VALUES = {
+  WRITTING_SPEED: 30,
+  PAUSE_BEFORE_NEXT_STANZA: 1200
+}
 
 const writeStanzas = async () => {
 
   for (const stanza of poemData.stanzas) {
-
     for (let i = 0; i < 4; i++) {
       await typeCode(`.stanza${stanza.id} .verse${i + 1}`, stanza.verses[i]);
-      await sleepNow(1000);
       smoothScrollToBottomOfPage();
+      await sleepNow(1500);
     }
   }
 };
 
-const writePoem = async () => {
+let codeOut = 0;
+
+const writePoem = async (delay = 1000) => {
+  if (codeOut === 'abracossom') delay = 2000;
   await sleepNow(1000);
   await typeCode('.poemTitle', poemData.title, 100);
-  await sleepNow(1000);
+  await sleepNow(delay);
   await writeStanzas();
   smoothScrollToBottomOfPage();
   await typeCode('.dedication', poemData.dedication);
@@ -30,6 +38,7 @@ const writePoem = async () => {
 }
 
 function App() {
+  const [audioFile, setAudioFile] = useState(new Audio(jardimAudioFile))
   const [poem, setPoem] = useState({
     title: "",
     stanzas: [],
@@ -49,8 +58,16 @@ function App() {
     console.log(code);
     console.log(e.target.input.value)
 
+    codeOut = code;
+
     if (code === 'abracos') {
       setShowPoem(true);
+      return;
+    }
+
+    else if (code === 'abracossom') {
+      setShowPoem(true);
+      audioFile.play();
       return;
     }
 
