@@ -4,20 +4,21 @@ import './App.css'
 import poemData from './static/poem.json';
 import jardimAudioFile from './static/jardim.mp3'
 
-import { sleepNow, typeCode, typeAllCode, smoothScrollToBottomOfPage } from './utils/utils';
-
-const DEFAULT_AUDIO_VALUES = {
-  WRITTING_SPEED: 30,
-  PAUSE_BEFORE_NEXT_STANZA: 1200
-}
+import { sleepNow, typeCode, smoothScrollToBottomOfPage } from './utils/utils';
 
 const writeStanzas = async () => {
 
   for (const stanza of poemData.stanzas) {
-    for (let i = 0; i < 4; i++) {
-      await typeCode(`.stanza${stanza.id} .verse${i + 1}`, stanza.verses[i]);
-      smoothScrollToBottomOfPage();
-      await sleepNow(1500);
+    console.log('Current Stanza: ' + stanza);
+    for (let i = 0; i < stanza.verses.length; i++) {
+      console.log('Current verse: ', stanza.verses[i]);
+      for (let j = 0; j < stanza.verses[i].length; j++) {
+        console.log('Current part: ', stanza.verses[i][j]);
+        await typeCode(`.stanza${stanza.id} .verse${i} .part${j}`, stanza.verses[i][j]);
+        smoothScrollToBottomOfPage();
+        await sleepNow(poemData.timeBetweenVersePartsInMilliseconds)
+      }
+      await sleepNow(poemData.timeBetweenStanzasInMilliseconds);
     }
   }
 };
@@ -25,8 +26,8 @@ const writeStanzas = async () => {
 let codeOut = 0;
 
 const writePoem = async (delay = 1000) => {
-  if (codeOut === 'abracossom') delay = 2000;
-  await sleepNow(1000);
+  if (codeOut === 'abracossom') delay = 1500;
+  await sleepNow(2000);
   await typeCode('.poemTitle', poemData.title, 100);
   await sleepNow(delay);
   await writeStanzas();
@@ -99,12 +100,14 @@ function App() {
       </div>
         : <div className="poem">
           <h1 className='poemTitle'>{ }</h1>
-          {poemData.stanzas.map((stanza, index) => <div className={`stanza${index + 1}`} id={`stanza${index + 1}`} key={stanza.id}>
-            <p className='verse1'>{ }</p>
-            <p className='verse2'>{ }</p>
-            <p className='verse3'>{ }</p>
-            <p className='verse4'>{ }</p>
-          </div>)
+          {poemData.stanzas.map((stanza, index) =>
+            <div className={`stanza${index}`} id={`stanza${index}`} key={stanza.id}>
+              {stanza.verses.map(((verse, verseIndex) =>
+                <p key={verse + index + verseIndex} className={`verse${verseIndex}`}>
+                  {verse.map((versePart, versePartIndex) => <span key={"" + index + verseIndex + versePartIndex} className={`part${versePartIndex}`}></span>)}
+                </p>
+              ))}
+            </div>)
           }
           <div>
             <p className='dedication'></p>
